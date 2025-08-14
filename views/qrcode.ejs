@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>UPI QR Code</title>
+</head>
+<body>
+
+  <h3>Scan this QR code to pay</h3>
+  <img id="upi-qr" src="" alt="UPI QR Code" style="width: 200px; height: 200px;"/>
+
+  <script>
+    const orderId = '<%= orderId %>'; 
+
+    fetch(`/order/${orderId}/upi-payment`, {
+      method: 'GET',
+      headers: {
+        'Content-Type': 'application/json'
+      }
+    })
+    .then(response => response.json())
+    .then(data => {
+      if (data.qrCode) {
+        document.getElementById('upi-qr').src = data.qrCode;
+      } else {
+        console.error("No QR code data received");
+      }
+    })
+    .catch(error => {
+      console.error('Error fetching QR code:', error);
+    });
+  </script>
+
+</body>
+</html>

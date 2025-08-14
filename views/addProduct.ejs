@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Add Product</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100 flex justify-center items-center h-screen">
+  <form method="POST" action="/admin/add" enctype="multipart/form-data" class="bg-white p-6 shadow rounded w-96">
+    <h1 class="text-2xl font-bold mb-4">Add Product</h1>
+    
+    <input name="name" placeholder="Name" class="w-full p-2 border mb-3" required>
+    
+    <input name="price" type="number" placeholder="Price" class="w-full p-2 border mb-3" required>
+    
+    <input name="stock" type="number" placeholder="Stock" class="w-full p-2 border mb-3" required>
+    
+    <input type="file" name="image" class="w-full p-2 border mb-3">
+    
+    <input name="category" placeholder="Category" class="w-full p-2 border mb-3">
+    
+    <textarea name="description" placeholder="Description" class="w-full p-2 border mb-3"></textarea>
+    
+    <button class="bg-blue-600 text-white px-4 py-2 w-full rounded">Save</button>
+  </form>
+</body>
+</html>

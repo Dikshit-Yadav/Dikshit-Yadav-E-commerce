@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Shop</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+<body class="bg-gray-100">
+<%- include('partials/navbar', { userRole: userRole }) %>
+<section class="hero">
+  <div class="slides">
+    <div class="slide"></div>
+    <div class="slide"></div>
+    <div class="slide"></div>
+  </div>
+
+  <div class="button-left">❮</div>
+  <div class="button-right">❯</div>
+</section>
+<section class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
+    <% products.forEach(product => { %>
+      <div class="bg-white p-4 shadow rounded">
+        <% if (product.image) { %>
+          <img src="/uploads/<%= product.image %>" class="w-80 h-60 <object-contain></object-contain> rounded mb-2">
+        <% } else { %>
+          <div class="bg-gray-300 w-full h-40 flex items-center justify-center rounded mb-2">No Image</div>
+        <% } %>
+        <h2 class="text-lg font-semibold"><%= product.name %></h2>
+        <p class="text-gray-600">₹<%= product.price %></p>
+        <p class="text-gray-600"><%=product.description %></p>
+        <form method="POST" action="/cart/add/<%= product._id %>">
+  <button class="bg-blue-600 text-white px-4 py-2 mt-2 rounded ">Add to Cart</button>
+</form>
+ <a href="/buy/<%= product._id %>" class="relative bottom-12 left-32">
+  <button class="bg-blue-600 text-white px-4 py-2 mt-2 rounded">Buy Now</button>
+</a>
+
+      </div>
+    <% }) %>
+  </section>
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <title>Checkout</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+
+<body class="bg-gray-100 min-h-screen flex items-center justify-center px-4">
+  <div class="bg-white p-8 rounded shadow-md w-full max-w-3xl">
+    <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Checkout</h2>
+
+    <form action="/place-order" method="POST" class="space-y-6">
+      <% if (cartItems.length === 1) { %>
+        <input type="hidden" name="productId" value="<%= cartItems[0].productId._id %>">
+      <% } %>
+
+      <div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-700">Billing Information</h3>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" name="bill-Name" placeholder="Full Name" required class="border p-2 rounded w-full">
+          <input type="email" name="bill-Email" placeholder="Email" required class="border p-2 rounded w-full">
+          <input type="text" name="bill-Address" placeholder="Address" required class="border p-2 rounded w-full md:col-span-2">
+          <input type="text" name="bill-City" placeholder="City" required class="border p-2 rounded w-full">
+          <input type="text" name="bill-Zip" placeholder="ZIP Code" required class="border p-2 rounded w-full">
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-700">Shipping Information</h3>
+        <label class="text-sm text-gray-600 flex items-center mb-2">
+          <input type="checkbox" onclick="copyBill()" class="mr-2"> Same as billing
+        </label>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <input type="text" id="shippingName" name="shippingName" placeholder="Full Name" class="border p-2 rounded w-full">
+          <input type="text" id="shippingAddress" name="shippingAddress" placeholder="Address" class="border p-2 rounded w-full">
+          <input type="text" id="shippingCity" name="shippingCity" placeholder="City" class="border p-2 rounded w-full">
+          <input type="text" id="shippingZip" name="shippingZip" placeholder="ZIP Code" class="border p-2 rounded w-full">
+        </div>
+      </div>
+
+      <div>
+        <h3 class="text-xl font-semibold mb-2 text-gray-700">Order Summary</h3>
+        <ul class="divide-y border rounded mb-2">
+          <% cartItems.forEach(item => { %>
+            <% if (item.productId) { %>
+              <li class="py-2 px-3 flex justify-between items-center">
+                <span><%= item.productId.name %> x <%= item.quantity %></span>
+                <span>₹<%= item.productId.price * item.quantity %></span>
+              </li>
+            <% } else { %>
+              <li class="py-2 px-3 text-red-600">[Product no longer available]</li>
+            <% } %>
+          <% }) %>
+        </ul>
+        <p class="font-bold text-right text-lg">Total: ₹<%= totalAmount %></p>
+      </div>
+
+      <button type="submit"
+        class="w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-300 font-semibold">
+        Place Order
+      </button>
+    </form>
+  </div>
+
+  <script>
+    function copyBill() {
+      document.getElementById('shippingName').value = document.querySelector('[name="bill-Name"]').value;
+      document.getElementById('shippingAddress').value = document.querySelector('[name="bill-Address"]').value;
+      document.getElementById('shippingCity').value = document.querySelector('[name="bill-City"]').value;
+      document.getElementById('shippingZip').value = document.querySelector('[name="bill-Zip"]').value;
+    }
+  </script>
+</body>
+
+</html>

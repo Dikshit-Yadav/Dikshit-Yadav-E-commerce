@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <link rel="stylesheet" href="/css/alarm.css">
+    <meta charset="UTF-8">
+    <title>Set Alarm</title>
+</head>
+
+<body>
+
+    <div class="container">
+        <h1>Set Alarm</h1>
+
+        <form id="alarmForm" method="POST" action="/set-alarm">
+            <div class="mb-3">
+                <label for="duration" class="form-label">Alarm Duration</label>
+                <div class="d-flex">
+                    <input type="number" id="durationHours" name="durationHours" placeholder="Hours" min="0" required>
+                    <input type="number" id="durationMin" name="durationMin" placeholder="Minutes" min="0" required>
+                </div>
+            </div>
+            <button type="submit">Set Alarm</button>
+        </form>
+
+        <div class="mt-4" id="reseMessage">
+            <% if (error) { %>
+                <div class="alert alert-danger"><%= error %></div>
+            <% } else if (alarm) { %>
+                <% if (alarm.status === 'ringed') { %>
+                    <div class="alert alert-success">Alarm is ringed</div>
+                <% } else { %>
+                    <div class="alert alert-info">
+                        Alarm set for: <%= new Date(alarm.alarmTime).toLocaleString() %>
+                    </div>
+                    <form method="GET" action="/alarm">
+                        <button class="mt-2">Refresh</button>
+                    </form>
+                <% } %>
+            <% } else { %>
+                <div class="alert alert-warning">No alarm set</div>
+            <% } %>
+        </div>
+    </div>
+
+</body>
+
+</html>

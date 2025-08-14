@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>My Cart</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100">
+  <%- include('partials/navbar', { userRole: userRole }) %>
+
+    <div class="p-6">
+      <h1 class="text-2xl font-bold mb-4">Your Cart</h1>
+
+      <% if (!cart || cart.products.length===0) { %>
+        <p class="text-gray-600">Your cart is empty.</p>
+        <% } else { %>
+          <table class="w-full bg-white shadow rounded">
+            <thead class="bg-gray-200">
+              <tr>
+                <th class="p-2">Product</th>
+                <th class="p-2">Price</th>
+                <th class="p-2">Quantity</th>
+                <th class="p-2">Total</th>
+                <th class="p-2">Action</th>
+              </tr>
+            </thead>
+            <tbody>
+              <% let grandTotal = 0; %>
+             <% cart.products.forEach(item => { %>
+  <% if (item.productId) { 
+      const total = item.productId.price * item.quantity;
+      grandTotal += total;
+  %>
+    <tr class="border-b">
+      <td class="p-2"><%= item.productId.name %></td>
+      <td class="p-2">₹<%= item.productId.price %></td>
+      <td class="p-2"><%= item.quantity %></td>
+      <td class="p-2">₹<%= total %></td>
+      <td class="p-2">
+        <a href="/cart/remove/<%= item.productId._id %>" class="text-red-600">Remove</a>
+      </td>
+    </tr>
+  <% } else { %>
+    <tr class="border-b">
+      <td colspan="5" class="p-2 text-red-600">One of the products is no longer available.</td>
+    </tr>
+  <% } %>
+<% }) %>
+
+            </tbody>
+          </table>
+
+          <div class="mt-4 text-xl font-bold">Total: ₹<%= grandTotal %>
+          </div>
+
+          <a href="/cart/checkout">
+            <button class="bg-green-600 text-white px-6 py-2 rounded">Checkout</button>
+         </a>
+
+          <% } %>
+    </div>
+    <%- include('partials/footer') %>
+</body>
+
+</html>

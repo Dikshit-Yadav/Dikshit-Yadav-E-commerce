@@ -1,0 +1,40 @@
+<nav class="bg-white shadow p-4 flex justify-between items-center">
+  <div class="font-bold text-xl">ShoppingAdda</div>
+
+  <div class="space-x-4 flex items-center">
+    <a href="/products" class="text-gray-700">Products</a>
+    <% if (userRole === 'admin') { %>
+      <a href="/admin" class="text-blue-600 font-semibold">Admin Dashboard</a>
+      <a href="/admin/orders" class="text-blue-600 font-semibold">All Orders</a>
+    <% } else { %>
+      <a href="/cart" class="text-blue-600 font-semibold">Cart</a>
+      <a href="/orders" class="text-blue-600 font-semibold">My Orders</a>
+    <% } %>
+
+    <div class="relative">
+      <button id="userDropdownButton" class="flex items-center gap-2 bg-gray-200 rounded-full p-2">
+        <span class="text-gray-800 font-semibold"><%= user.name %></span>
+        <img src="/uploads/default.jpg" alt="User Avatar" class="w-10 h-10 object-cover rounded-full">
+      </button>
+      <div id="userDropdown" class="absolute right-0 hidden bg-white shadow-lg z -1000 rounded-md w-48 mt-2">
+        <ul class="py-2">
+          <li><a href="/profile" class="block px-4 py-2 text-gray-700 hover:bg-gray-100">Profile</a></li>
+          <li><a href="/logout" class="block px-4 py-2 text-red-500 hover:bg-gray-100">Logout</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
+</nav>
+
+<script>
+  document.getElementById('userDropdownButton').addEventListener('click', function () {
+    const dropdown = document.getElementById('userDropdown');
+    dropdown.classList.toggle('hidden');
+  });
+
+  window.addEventListener('click', function (event) {
+    if (!event.target.closest('#userDropdownButton')) {
+      document.getElementById('userDropdown').classList.add('hidden');
+    }
+  });
+</script>

@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>All Orders</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-gray-100">
+  <%- include('partials/navbar', { userRole: userRole }) %>
+
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">All Orders</h1>
+
+    <% if (orders.length === 0) { %>
+      <p class="text-gray-600">No orders placed yet.</p>
+    <% } else { %>
+      <% orders.forEach(order => { %>
+        <div class="bg-white p-4 mb-4 shadow rounded">
+          <h2 class="font-bold">Order #<%= order._id %></h2>
+          <p>User: <%= order.userId.name %> (<%= order.userId.email %>)</p>
+          
+          <form method="POST" action="/admin/orders/update/<%= order._id %>" class="mt-2">
+            <label class="font-semibold">Status:</label>
+            <select name="status" class="border p-1 rounded">
+              <option value="Pending" <%= order.status === 'Pending' ? 'selected' : '' %>>Pending</option>
+              <option value="Shipped" <%= order.status === 'Shipped' ? 'selected' : '' %>>Shipped</option>
+              <option value="Delivered" <%= order.status === 'Delivered' ? 'selected' : '' %>>Delivered</option>
+            </select>
+            <button class="bg-blue-600 text-white px-3 py-1 rounded ml-2">Update</button>
+          </form>
+
+          <ul class="mt-2">
+            <% order.products.forEach(item => { %>
+              <li><%= item.productId.name %> x <%= item.quantity %></li>
+            <% }) %>
+          </ul>
+          <p class="mt-2 font-bold">Total: ₹<%= order.totalPrice %></p>
+        </div>
+      <% }) %>
+    <% } %>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Order Details</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-100 min-h-screen px-4">
+  <%- include('partials/navbar', { userRole: userRole }) %>
+
+  <main class="flex-grow flex items-center justify-center px-4">
+    <div class="bg-white p-8 rounded shadow-md w-full max-w-2xl">
+      <h2 class="text-2xl font-bold mb-6 text-center text-gray-800">Order Details</h2>
+
+      <div class="space-y-6">
+        <div class="border-b pb-4">
+          <h3 class="text-xl font-semibold text-gray-700">Order Summary</h3>
+          <ul class="divide-y border rounded mb-2">
+            <% order.products.forEach(item => { %>
+              <% if (item.productId) { %>
+                <li class="py-2 px-3 flex justify-between items-center">
+                  <span><%= item.productId.name %> x <%= item.quantity %></span>
+                  <span>₹<%= item.productId.price * item.quantity %></span>
+                </li>
+              <% } else { %>
+                <li class="py-2 px-3 text-red-600">[Product no longer available]</li>
+              <% } %>
+            <% }) %>
+          </ul>
+          <p class="font-bold text-right text-lg">Total: ₹<%= order.totalPrice %></p>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="text-xl font-semibold text-gray-700">Billing Info</h3>
+          <ul class="mb-2">
+            <li><strong>Name:</strong> <%= order.billingInfo.name %></li>
+            <li><strong>Email:</strong> <%= order.billingInfo.email %></li>
+            <li><strong>Address:</strong> <%= order.billingInfo.address %>, <%= order.billingInfo.city %> - <%= order.billingInfo.zip %></li>
+          </ul>
+        </div>
+
+        <div class="border-b pb-4">
+          <h3 class="text-xl font-semibold text-gray-700">Shipping Info</h3>
+          <ul class="mb-2">
+            <li><strong>Name:</strong> <%= order.shippingInfo.name || order.billingInfo.name %></li>
+            <li><strong>Address:</strong> <%= order.shippingInfo.address || order.billingInfo.address %>, <%= order.shippingInfo.city || order.billingInfo.city %> - <%= order.shippingInfo.zip || order.billingInfo.zip %></li>
+          </ul>
+        </div>
+
+        <div>
+          <h3 class="text-xl font-semibold text-gray-700">Payment Status:</h3>
+          <p class="text-lg font-semibold" id="payment-status-message">
+            <%= order.paymentStatus === 'paid' ? 'Payment Successful' : 'Payment Pending' %>
+          </p>
+
+          <div id="payment-status" class="mt-4">
+            <% if (order.paymentStatus === 'paid') { %>
+              <p class="text-green-600 text-lg">Your payment was successful! Thank you for your purchase.</p>
+            <% } else { %>
+              <p class="text-red-600 text-lg">Your payment is still pending. Please complete the payment.</p>
+              
+              <button id="pay-now-btn" class="mt-4 w-full bg-blue-600 text-white py-3 rounded hover:bg-blue-700 transition duration-300 font-semibold">
+                Pay Now
+              </button>
+            <% } %>
+          </div>
+        </div>
+
+        <div class="mt-6 text-center">
+          <p class="text-sm text-gray-500">Order #<%= order._id %> | Placed On: <%= order.createdAt.toDateString() %></p>
+        </div>
+      </div>
+    </div>
+  </main>
+
+  <%- include('partials/footer') %>
+
+  <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+  <script>
+    document.getElementById('pay-now-btn').addEventListener('click', function() {
+      const orderId = "<%= order._id %>";
+      const totalAmount = <%= order.totalPrice %> * 100; 
+      
+      const options = {
+        key: "<%= key_id %>",  
+        amount: totalAmount,
+        currency: "INR",
+        name: "Shopping Adda",
+        description: "Order Payment",
+        order_id: "<%= order.razorpayOrderId %>",  
+        handler: function(response) {
+          window.location.href = `/order/${orderId}/verify-payment?paymentId=${response.razorpay_payment_id}&signature=${response.razorpay_signature}`;
+        },
+        prefill: {
+          name: "<%= order.billingInfo.name %>",
+          email: "<%= order.billingInfo.email %>",
+          contact: "<%= order.billingInfo.contact || '9999999999' %>"
+        },
+        theme: {
+          color: "#F37254"
+        }
+      };
+
+      const razorpay = new Razorpay(options);
+      razorpay.open();
+    });
+  </script>
+</body>
+</html>

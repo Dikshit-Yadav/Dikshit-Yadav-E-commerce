@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Dashboard</title>
+  <link href="/css/style.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+</head>
+
+<body class="bg-gray-100">
+    <%- include('partials/navbar', { userRole: userRole }) %>
+
+  <div class="p-6">
+    <h1 class="text-2xl font-bold mb-4">Admin Dashboard</h1>
+    <a href="/admin/add" class="bg-green-600 text-white px-4 py-2 rounded">Add Product</a>
+    <table class="w-full mt-4 bg-white shadow rounded">
+      <thead>
+        <tr class="bg-gray-200">
+          <th class="p-2">Name</th>
+          <th class="p-2">Price</th>
+          <th class="p-2">Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <% products.forEach(p => { %>
+          <tr class="border-b">
+            <td class="p-2"><%= p.name %></td>
+            <td class="p-2">₹<%= p.price %></td>
+            <td class="p-2">
+              <a href="/admin/edit/<%= p._id %>" class="text-blue-600">Edit</a> | 
+              <a href="/admin/delete/<%= p._id %>" class="text-red-600">Delete</a>
+            </td>
+          </tr>
+        <% }) %>
+      </tbody>
+    </table>
+  </div>
+  <%- include('partials/footer') %>
+</body>
+</html>
