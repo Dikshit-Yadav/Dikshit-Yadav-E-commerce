@@ -4,7 +4,7 @@ const Product = require('../models/Product');
 const User = require('../models/User');
 const authMiddleware = require('../middlewares/authMiddleware');
 // const upload =require('../middlewares/multer');
-const { upload, processImage } = require('../middlewares/multer');
+const upload = require('../middlewares/multer');
 const sharp = require('sharp');
 
 router.get('/products', authMiddleware, async (req, res) => {
