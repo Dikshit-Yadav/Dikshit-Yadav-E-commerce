@@ -33,30 +33,14 @@ router.get('/admin/add', authMiddleware,  (req, res) => {
   res.render('addProduct');
 });
 
-router.post('/admin/add', authMiddleware, upload.single('image'), processImage, async (req, res) => {
+router.post('/admin/add', authMiddleware, upload.single('image'), async (req, res) => {
   if (req.userRole !== 'admin') return res.send("Access Denied");
 
   const { name, description, price, stock, category } = req.body;
   
-  // const image = req.file ? req.file.filename : null;
+  const image = req.file ? req.file.filename : null;
 
-    const imageBase64 = req.imageBase64 || "";
-  // let imageBase64 = "";
-  // if (req.file) {
-  //   try {
-  //     const compressedBuffer = await sharp(req.file.buffer)
-  //       .resize({ width: 800 })
-  //       .jpeg({ quality: 70 })
-  //       .toBuffer();
-
-  //     imageBase64 = `data:image/jpeg;base64,${compressedBuffer.toString('base64')}`;
-  //   } catch (err) {
-  //     console.error("Error processing image:", err);
-  //     return res.status(500).send("Image processing error");
-  //   }
-  // }
-
-  await Product.create({ name, description, price, stock, image:imageBase64, category,createdBy: req.user._id });
+  await Product.create({ name, description, price, stock, image, category,createdBy: req.user._id });
   res.redirect('/admin');
 });
 

@@ -25,16 +25,11 @@
   <section class="p-6 grid grid-cols-1 md:grid-cols-4 gap-6">
     <% products.forEach(product => { %>
       <div class="bg-white p-4 shadow rounded">
-       <% if (product.image) { %>
-  <% if (product.image.startsWith('data:image')) { %>
-    <img src="<%= product.image %>" class="w-80 h-60 object-contain rounded mb-2">
-  <% } else { %>
-    <img src="/uploads/<%= product.image %>" class="w-80 h-60 object-contain rounded mb-2">
-  <% } %>
-<% } else { %>
-  <div class="bg-gray-300 w-full h-40 flex items-center justify-center rounded mb-2">No Image</div>
-<% } %>
-
+        <% if (product.image) { %>
+          <img src="/uploads/<%= product.image %>" class="w-80 h-60 <object-contain></object-contain> rounded mb-2">
+        <% } else { %>
+          <div class="bg-gray-300 w-full h-40 flex items-center justify-center rounded mb-2">No Image</div>
+        <% } %>
         <h2 class="text-lg font-semibold"><%= product.name %></h2>
         <p class="text-gray-600">₹<%= product.price %></p>
         <p class="text-gray-600"><%=product.description %></p>
