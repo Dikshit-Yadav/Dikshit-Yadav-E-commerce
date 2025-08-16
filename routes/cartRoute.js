@@ -153,7 +153,7 @@ router.post('/place-order', authMiddleware, async (req, res) => {
       });
 
       await order.save();
-      res.redirect("/orders")
+      res.redirect(`/orders/${order._id}`);
 
     } catch (err) {
       console.error('Razorpay Error:', err);

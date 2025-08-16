@@ -8,8 +8,8 @@ const processImage = async (req, res, next) => {
 
   try {
     const compressedBuffer = await sharp(req.file.buffer)
-      .resize({ width: 800 })
-      .jpeg({ quality: 70 })
+      .resize({ width: 400 })
+      .jpeg({ quality: 40 })
       .toBuffer();
 
     req.imageBase64 = `data:image/jpeg;base64,${compressedBuffer.toString('base64')}`;
