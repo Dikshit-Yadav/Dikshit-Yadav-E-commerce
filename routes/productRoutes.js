@@ -3,7 +3,9 @@ const router = express.Router();
 const Product = require('../models/Product');
 const User = require('../models/User');
 const authMiddleware = require('../middlewares/authMiddleware');
-const upload =require('../middlewares/multer');
+// const upload =require('../middlewares/multer');
+const { upload, processImage } = require('../middlewares/multer');
+const sharp = require('sharp');
 
 router.get('/products', authMiddleware, async (req, res) => {
   const user = await User.findById(req.userId).populate('name');
@@ -17,7 +19,9 @@ router.get('/admin', authMiddleware, async (req, res) => {
 
   };
   const user = await User.findById(req.userId).populate('name');
-  const products = await Product.find();
+  // const products = await Product.find();
+  const products = await Product.find({ createdBy: req.user._id });
+
   res.render('adminDashboard', { products, userRole: req.userRole,user });
 });
 
@@ -29,20 +33,40 @@ router.get('/admin/add', authMiddleware,  (req, res) => {
   res.render('addProduct');
 });
 
-router.post('/admin/add', authMiddleware, upload.single('image'), async (req, res) => {
+router.post('/admin/add', authMiddleware, upload.single('image'), processImage, async (req, res) => {
   if (req.userRole !== 'admin') return res.send("Access Denied");
 
   const { name, description, price, stock, category } = req.body;
-  const image = req.file ? req.file.filename : null;
+  
+  // const image = req.file ? req.file.filename : null;
 
-  await Product.create({ name, description, price, stock, image, category });
+    const imageBase64 = req.imageBase64 || "";
+  // let imageBase64 = "";
+  // if (req.file) {
+  //   try {
+  //     const compressedBuffer = await sharp(req.file.buffer)
+  //       .resize({ width: 800 })
+  //       .jpeg({ quality: 70 })
+  //       .toBuffer();
+
+  //     imageBase64 = `data:image/jpeg;base64,${compressedBuffer.toString('base64')}`;
+  //   } catch (err) {
+  //     console.error("Error processing image:", err);
+  //     return res.status(500).send("Image processing error");
+  //   }
+  // }
+
+  await Product.create({ name, description, price, stock, image:imageBase64, category,createdBy: req.user._id });
   res.redirect('/admin');
 });
 
 
 router.get('/admin/edit/:id', authMiddleware, async (req, res) => {
   if (req.userRole !== 'admin') return res.send("Access Denied");
-  const product = await Product.findById(req.params.id);
+  // const product = await Product.findById(req.params.id);
+  const product = await Product.findOne({ _id: req.params.id, createdBy: req.user._id });
+if (!product) return res.status(403).send("Access Denied");
+
   res.render('editProduct', { product });
 });
 
@@ -51,7 +75,10 @@ router.post('/admin/edit/:id', authMiddleware, async (req, res) => {
     return res.send("Access Denied")
   };
   const { name, description, price, image, category } = req.body;
-  await Product.findByIdAndUpdate(req.params.id, { name, description, price, image, category });
+  await Product.findByIdAndUpdate(
+    // req.params.id,
+     { _id: req.params.id, createdBy: req.user._id },
+     { name, description, price, image, category });
   res.redirect('/admin');
 });
 
@@ -59,7 +86,8 @@ router.get('/admin/delete/:id', authMiddleware, async (req, res) => {
   if (req.userRole !== 'admin') {
     return res.send("Access Denied");
   }
-  await Product.findByIdAndDelete(req.params.id);
+  // await Product.findByIdAndDelete(req.params.id);
+  await Product.findOneAndDelete({ _id: req.params.id, createdBy: req.user._id });
   res.redirect('/admin');
 });
 

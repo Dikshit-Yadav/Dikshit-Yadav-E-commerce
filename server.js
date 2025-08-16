@@ -5,6 +5,8 @@ const cookieParser = require('cookie-parser');
 const cron = require('node-cron');
 const methodOverride = require('method-override');
 const Alarm = require('./models/Alarm')
+const sharp = require('sharp');
+
 
 const app = express();
 const homeRoute = require('./routes/homeRoute')
