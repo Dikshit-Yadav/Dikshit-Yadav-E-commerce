@@ -24,10 +24,10 @@ router.post("/", async (req, res) => {
 
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, { expiresIn: '10m' });
 
-    const resetLink = `http://localhost:3000/reset-password/${token}`;
+    const resetLink = `https://dikshit-yadav-e-commerce.onrender.com/reset-password/${token}`;
 
     await transporter.sendMail({
-      from: `"QuickCart" <${process.env.EMAIL_USER}>`,
+      from: `"ShoppingAdda" <${process.env.EMAIL_USER}>`,
       to: email,
       subject: "Password Reset",
       html: `

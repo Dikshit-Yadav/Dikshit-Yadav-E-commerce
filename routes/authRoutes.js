@@ -20,7 +20,7 @@ router.post('/register', exports.handelLogin =   async (req, res) => {
     await transporter.sendMail({
       from:process.env.EMAIL_USER,
       to: email,
-      subject: "QuickCart OTP",
+      subject: "ShoppingAdda OTP",
       text: `Your One-Time Password (OTP) is: ${otp}. It is valid for 10 minutes. Do not share this code with anyone. `
     });
     res.render("Verify", { email })
